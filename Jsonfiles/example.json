@@ -1,7 +1,17 @@
+<<<<<<< HEAD:Jsonfiles/example.json
 {
     "recipe-name": "Sigma Omellete",
     "cooking-time": "55",
     "credit": "John",
     "ingredients": ["poop", "butt"],
     "instructions": ["burn the plate", "kill urself"]
+=======
+{
+    "recipe-name": "wawawwaawaa Omellete",
+    "cooking-time": "67",
+    "credit": "me",
+    "nutrients": ["167 Kcal", "6g protein"],
+    "ingredients": ["teehee", "pero"],
+    "instructions": ["whoa", "joy and whimsy", "everywhere"]
+>>>>>>> 9aa0f9d7b9f6e0d55a8a83d30e56d67c781d5872:example.json
 }

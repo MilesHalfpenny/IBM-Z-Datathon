@@ -1,12 +1,9 @@
-{
-
-    "recipes": [
-        {
-        "recipe-name": "Sigma Omellete",
-        "cooking-time": "55",
-        "credit": "John",
-        "ingredients": ["poop", "butt"],
-        "instructions": ["burn the plate", "kill urself"]
-        }
-    ]
-}
+[
+    {
+    "recipe-name": "Sigma Omellete",
+    "cooking-time": "55",
+    "credit": "John",
+    "ingredients": ["poop", "butt"],
+    "instructions": ["burn the plate", "kill urself"]
+    }
+]
