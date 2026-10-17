@@ -1,7 +1,5 @@
 # IBM-Z-Datathon
-PLEASE USE DIFFERENT BRANCHES! 😄
+Project: Creating an application where AI is used to retrieve and display recipes depending on the user's dietary requirements/limitations.
 
-Note that this WILL be made public on submission
-We still need to add a licence
-
-Repository for Offloading team for IBM Z Datathon :)
+Team: Offloading
+Members: Miles, Sara, Zhi, Henry, Rhys, Azhar
