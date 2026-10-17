@@ -1,2 +1,7 @@
 # IBM-Z-Datathon
-Repository for Offloading team for IBM Z Datathon :) Note that this WILL be made public on submission and we still need to add a licence
+PLEASE USE DIFFERENT BRANCHES! 😄
+
+Note that this WILL be made public on submission
+We still need to add a licence
+
+Repository for Offloading team for IBM Z Datathon :)
