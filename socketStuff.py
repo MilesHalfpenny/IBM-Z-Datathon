@@ -3,49 +3,206 @@ import tkinter as tk
 from tkinter import *
 import json
 
+verityJson = ""
+
+
+#Assume fw is the received file
+# IMPORTANT------------------------ DELETE WHEN BACK END IS DONE. REPLACE WITH BACKEND'S OUTPUT
+fw = ""
+
+# create root window
+if verityJson == "":
+    print("this works")
+    with open("savedRecipes.json", "r") as file:
+        meow = json.load(file)
+else:
+    #if this doesn't work, just comment it out
+    #fw should be the file received from back-end
+    recipeDetails = fw
+
+#Save the recipe
+
+with open("savedRecipes.json", "r") as file:
+    meow = json.load(file)
+with open("example.json", "r") as file:
+    bark = json.load(file)
+
+print
+
+meow.append(bark)
+
+with open("savedRecipes.json", "w") as f:
+    json.dump(meow, f)
+
+with open("savedRecipes.json", "r") as wow:
+    savedRecipes = json.load(wow)
+
+
+def recipe_menu():
+    print("placeholder")
+    newRoot = Tk()
+    
+    # root window title and dimension
+    newRoot.title("Your Recipe")
+    # Set geometry(widthxheight)
+    newRoot.geometry(str(newRoot.winfo_screenwidth()) + "x" + str(newRoot.winfo_screenheight()))
+
+    # adding menu bar in root window
+    # new item in menu bar labelled as 'New'
+    # adding more items in the menu bar 
+    menu = Menu(newRoot)
+    item = Menu(menu)
+    item.add_command(label='New')
+    menu.add_cascade(label='File', menu=item)
+    newRoot.config(menu=menu)
+
+    for i in range(len(savedRecipes)):
+        view_recipe = Button(newRoot, text=savedRecipes[i]["recipe-name"],
+                                command=lambda: run(i))
+        view_recipe.pack()
+
+    newRoot.mainloop()
+
+
+
+def run(loadRecipe):
+    #File to read and display (for testing)
+
+    recipe_name=savedRecipes[loadRecipe]["recipe-name"]
+    cooking_time=savedRecipes[loadRecipe]["cooking-time"]
+    credit=savedRecipes[loadRecipe]["credit"]
+    nutrients = savedRecipes[loadRecipe]["nutrients"]
+    ingredients=savedRecipes[loadRecipe]["ingredients"]
+    instructions=savedRecipes[loadRecipe]["instructions"]
+
+    print(file)
+
+    root = Tk()
+
+    # root window title and dimension
+    root.title("Your Recipe")
+    # Set geometry(widthxheight)
+    root.geometry(str(root.winfo_screenwidth()) + "x" + str(root.winfo_screenheight()))
+
+    # adding menu bar in root window
+    # new item in menu bar labelled as 'New'
+    # adding more items in the menu bar 
+    menu = Menu(root)
+    item = Menu(menu)
+    item.add_command(label='New')
+    menu.add_cascade(label='File', menu=item)
+    root.config(menu=menu)
+
+    #Set up the Title
+    title = tk.Label(root,
+                text= recipe_name,
+                font=("Arial", 67, "bold"),
+                bg="lightblue",
+                fg="darkblue",
+                width=20,
+                height=2,
+                relief="raised")
+
+    title.pack(pady=30)
+
+    #make a straight line below the title
+    line = tk.Label(root,
+                text="",
+                font=("Arial", 2, "bold"),
+                bg="gray",
+                fg="gray",
+                width=467,
+                height=0,
+                relief="raised")
+
+    line.pack()
+
+    #additional information
+
+    addInfo = tk.Label(root, text=str(str(cooking_time) + "mins || " + str(credit)))
+
+    nutri_label = tk.Label(root, text="ingredients",
+                                font = ("Comic Sans", 32, "bold"))
+
+    nutrientsBox = Listbox(root, height = 7, 
+                        width = 25, 
+                        bg = "grey",
+                        activestyle = 'dotbox', 
+                        font = "Helvetica",
+                        fg = "yellow")
+
+    for i in range(len(nutrients)):
+        nutrientsBox.insert(i, str(str(i) + ". " + nutrients[i]))
+
+
+    ingred_label = tk.Label(root, text="ingredients",
+                            font = ("Comic Sans", 32, "bold"))
+
+    ingredientsBox = Listbox(root, height = 7, 
+                    width = 15, 
+                    bg = "grey",
+                    activestyle = 'dotbox', 
+                    font = "Helvetica",
+                    fg = "yellow")
+
+    for i in range(len(ingredients)):
+        ingredientsBox.insert(i, str(str(i) + ". " + ingredients[i]))
+
+
+    instruc_label = tk.Label(root, text="Instructions",
+                            font = ("Comic Sans", 32, "bold"))
+
+    instructionsBox = Listbox(root, height = 7, 
+                    width = 15, 
+                    bg = "grey",
+                    activestyle = 'dotbox', 
+                    font = "Helvetica",
+                    fg = "yellow")
+
+    for i in range(len(instructions)):
+        instructionsBox.insert(i, str(str(i) + ". " + instructions[i]))
+
+    #pack stuff
+    nutri_label.pack()
+    nutrientsBox.pack()
+    ingred_label.pack()
+    ingredientsBox.pack()
+    instruc_label.pack()
+    instructionsBox.pack()
+
+    #FINISHED BUTTON
+    #View past recipes button
+    view_recipe = Button(root, text="View other recipes",
+                        command=recipe_menu)
+
+
+    #again button
+    again_but = Button(root, text = "Generate a new recipe")
+
+
+    #close
+    close_but = Button(root, text="Close application",
+                    )
+
+    #for i in range(len(savedRecipes)):
+    view_recipe.pack()
+    again_but.pack()
+    close_but.pack()
+
+    # Execute Tkinter
+    root.mainloop()
+#END OF THE RUN FUNCTION ---------------- 
+
 #File to read and display (for testing)
 file = open("example.json")
-savedRevipes = open("savedRecipe")
 
 print(file)
 
 verityJson = ""
 
-# Creating Client Socket
-# host = '148.100.99.69'
-# port = 6767
-
-# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# # Connecting with Server
-# sock.connect((host, port))
-
-# #Taking input from server
-# while True:
-#     (conn, address) = sock.accept()
-#     json_file = 'recipe.json'
-
-#     #Receive, output and save file
-#     with open(json_file, "wb") as fw:
-#         print("Receiving..")
-#         while True:
-#             print('receiving')
-#             data = conn.recv(1024)
-#             print('Received: ', data.decode('utf-8'))
-#             if not data:
-#                 print('Breaking from file write')
-#                 break
-#             fw.write(data)
-#             print('Wrote to file', data.decode('utf-8'))
-
-#         verityJson = fw
-#         fw.close()
-#         print("Received..")
-#     break
-
-# sock.close()
-
-# print(recipeDetails)
+#Assume fw is the received file
+# IMPORTANT------------------------ DELETE WHEN BACK END IS DONE. REPLACE WITH BACKEND'S OUTPUT
+fw = ""
 
 # create root window
 if verityJson == "":
@@ -55,85 +212,5 @@ else:
     #fw should be the file received from back-end
     recipeDetails = fw
 
-#Save the recipe
+run(int(len(savedRecipes))-1)
 
-
-
-root = Tk()
-
-# root window title and dimension
-root.title("Welcome to GeekForGeeks")
-# Set geometry(widthxheight)
-root.geometry(str(root.winfo_screenwidth()) + "x" + str(root.winfo_screenheight()))
-
-# adding menu bar in root window
-# new item in menu bar labelled as 'New'
-# adding more items in the menu bar 
-menu = Menu(root)
-item = Menu(menu)
-item.add_command(label='New')
-menu.add_cascade(label='File', menu=item)
-root.config(menu=menu)
-
-#Set up the Title
-title = tk.Label(root,
-               text= recipeDetails["recipe-name"],
-               font=("Arial", 67, "bold"),
-               bg="lightblue",
-               fg="darkblue",
-               width=20,
-               height=2,
-               relief="raised")
-
-title.pack(pady=30)
-
-#make a straight line below the title
-line = tk.Label(root,
-               text="",
-               font=("Arial", 2, "bold"),
-               bg="gray",
-               fg="gray",
-               width=467,
-               height=0,
-               relief="raised")
-
-line.pack()
-
-#additional information
-
-addInfo = tk.Label(root, text=str(str(recipeDetails["cooking-time"]) + "mins || " + str(recipeDetails["credit"])))
-
-ingred_label = tk.Label(root, text="Ingredients",
-                        font = ("Comic Sans", 32, "bold"))
-
-ingredients = Listbox(root, height = 10, 
-                  width = 15, 
-                  bg = "grey",
-                  activestyle = 'dotbox', 
-                  font = "Helvetica",
-                  fg = "yellow")
-
-for i in range(len(recipeDetails["ingredients"])):
-    ingredients.insert(i, str(str(i) + ". " + recipeDetails["ingredients"][i]))
-
-instruc_label = tk.Label(root, text="Instructions",
-                        font = ("Comic Sans", 32, "bold"))
-
-instructions = Listbox(root, height = 10, 
-                  width = 15, 
-                  bg = "grey",
-                  activestyle = 'dotbox', 
-                  font = "Helvetica",
-                  fg = "yellow")
-
-for i in range(len(recipeDetails["instructions"])):
-    instructions.insert(i, str(str(i) + ". " + recipeDetails["instructions"][i]))
-
-#pack stuff
-ingred_label.pack()
-ingredients.pack()
-instruc_label.pack()
-instructions.pack()
-
-# Execute Tkinter
-root.mainloop()
