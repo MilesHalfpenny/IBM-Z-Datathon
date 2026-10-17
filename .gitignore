@@ -1,3 +1,8 @@
+#Large data files
+Ingredients.db
+FoodData_Central_csv_2026-04-30/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
