@@ -1,11 +1,19 @@
 
 {
-  "0": "o0",
-  "1": "o1",
-  "2": "o2",
-  "3": "o3",
-  "4": "o4",
-  "5": "o5",
-  "6": "o6",
-  "7": "o7"
+  "0": "Diabetes",
+  "1": "Low Carbs",
+  "2": "Low Sodium",
+  "3": "Peanut Allergy",
+  "4": "No Eggs",
+  "5": "Vegetarian",
+  "6": "Vegan",
+  "7": "Pescetarian",
+  "8": "Kosher",
+  "9": "Halal",
+  "10":"Lactose Intolerance",
+  "11":"Gluten-Free",
+  "12":"Fish Allergy",
+  "13":"Crustacean And Shellfish Allergy",
+  "14":"Wheat Allergy",
+  "15":"Soy Allergy"
 }

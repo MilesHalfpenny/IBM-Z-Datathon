@@ -1,9 +1,1 @@
-[
-    {
-    "recipe-name": "Sigma Omellete",
-    "cooking-time": "55",
-    "credit": "John",
-    "ingredients": ["poop", "butt"],
-    "instructions": ["burn the plate", "kill urself"]
-    }
-]
+[{"recipe-name": "tasty recipe", "cooking-time": 60, "credit": "max fosh", "nutrients": "[\"100g proteins\",\"500kcal\",\"10mg\"]", "ingredients": "[\"cheese\",\"dynamite\",\"think about it\",\"NoneType object has no attribute recv\"]", "instructions": "[\"Put the dynamite in the oven.\",\"Chop the think about it into small chunks\",\"Mix together\",\"Season with cheese and michael\"]"}, {"recipe-name": "tasty recipe", "cooking-time": 60, "credit": "max fosh", "nutrients": ["100g proteins", "500kcal", "10mg"], "ingredients": ["cheese", "dynamite", "think about it", "NoneType object has no attribute recv"], "instructions": ["Put the dynamite in the oven.", "Chop the think about it into small chunks", "Mix together", "Season with cheese and michael"]}, {"recipe-name": "tasty recipe", "cooking-time": 60, "credit": "max fosh", "nutrients": ["100g proteins", "500kcal", "10mg"], "ingredients": ["cheese", "dynamite", "think about it", "NoneType object has no attribute recv"], "instructions": ["Put the dynamite in the oven.", "Chop the think about it into small chunks", "Mix together", "Season with cheese and michael"]}, {"recipe-name": "tasty recipe", "cooking-time": 60, "credit": "max fosh", "nutrients": ["100g proteins", "500kcal", "10mg"], "ingredients": ["cheese", "dynamite", "think about it", "NoneType object has no attribute recv"], "instructions": ["Put the dynamite in the oven.", "Chop the think about it into small chunks", "Mix together", "Season with cheese and michael"]}]

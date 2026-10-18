@@ -14,12 +14,6 @@ reliefVar="solid"
 
 
 
-
-
-
-
-
-
 class images():
     pass
 
@@ -40,9 +34,7 @@ class app(Tk):
         #STYLE
         self.mainStyle=ttk.Style('datathon_theme_3')
 
-        #################################
-        #TO BE CONFIRMED!!
-        self.NUMOFOPTIONS=8
+        self.NUMOFOPTIONS=16
         #JSON FILE FOR CHOICES TO BE TAKEN FROM
         with open("IBM-Z-Datathon\\Jsonfiles\\options.json") as f:
             self.deficiencyOptionsDict=json.load(f)
@@ -52,7 +44,6 @@ class app(Tk):
             for k, v in json.load(f).items():
                 self.choicesDict[k] = ttk.BooleanVar(value=v)
         
-        ################################
         
 
     def start(self):
@@ -70,58 +61,80 @@ class app(Tk):
         self.mainPage.tkraise()
 
     def switch_screen(self,screen):
-        screen.tkraise()
+        print("at switch screen")
+        screen.tkraise() 
+
+    def run(self,loadRecipe,savedRecipes):
+        currentRecipePage=current_recipe_page(self.container,self,loadRecipe,savedRecipes)
+
+
 
     def send_data(self,request):
         host='148.100.99.69'
-        port=6767
+        port=6768
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((host, port))
 
         outputList=[]
-        for k, v in self.ctlr.choicesDict.items():
+        for k, v in self.choicesDict.items():
             if v:
                 outputList.append(k)
 
-        outputDict={"Dietary Requirements": outputList,
-                    "User Request": request}
+        outputDict={"dietary_reqs": outputList,
+                    "request": request}
 
         finalOutputJson=json.dumps(outputDict)
 
-        sock.send(finalOutputJson.encode())
+        encodedOutput = bytearray(finalOutputJson.encode()) + b'\0'
 
-        self.recieve_data()
+        sock.send(encodedOutput)
+
+        self.receive_data(sock)
 
 
         
 
 
-    def recieve_data(self):
-        # Creating Client Socket
-        host = '148.100.99.69'
-        port = 6767
-
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        # Connecting with Server
-        sock.connect((host, port))
-
-        #Taking input from server
-        (conn, address) = sock.accept()
-        json_file = 'recipe.json'
-
+    def receive_data(self, conn):
         #Receive, output and save file
-        recievedMessage=""
+        receivedMessage=bytearray()
         while True:
             data=conn.recv(1024)
             if not data:
                 break
 
-            recievedMessage+=str(data)
-        recipejson=json.loads(recievedMessage)
+            receivedMessage+=data
+        print(receivedMessage)
+        self.recipejson=json.loads(receivedMessage)
 
-        sock.close()
+
         self.switch_screen(self.NutritionPage)
+
+        self.saveRecipe(self.recipejson)
+
+
+    def saveRecipe(self,recipejson):
+        # Save the recipe
+        with open("IBM-Z-Datathon\Jsonfiles\savedRecipes.json", "r") as file:
+            savedRecipesLocal = json.load(file)
+
+        savedRecipesLocal.append(recipejson)
+
+        with open("IBM-Z-Datathon\Jsonfiles\savedRecipes.json", "w") as f:
+            json.dump(savedRecipesLocal, f)
+
+        #opening new recipe
+        with open("IBM-Z-Datathon\Jsonfiles\savedRecipes.json", "r") as wow:
+            savedRecipesLocal = json.load(wow)
+
+        for i in range(len(savedRecipesLocal)):
+
+            view_recipe = Button(self.NutritionPage, text=savedRecipesLocal[i]["recipe-name"],
+                                    command=lambda: self.run(i,savedRecipesLocal))
+            view_recipe.pack()
+
+    def kill(self):
+        self.destroy()
 
 
 
@@ -143,13 +156,15 @@ class main_page(ttk.Frame):
         j=0
         k=0
         for i in range(ctlr.NUMOFOPTIONS):
-            j+=1
             t=ctlr.deficiencyOptionsDict[str(i)]
             c=ttk.Checkbutton(self.checkboxFrame,text=t,variable=self.ctlr.choicesDict[t],padding=3)
-            c.grid(row=i,column=k)
+            c.grid(row=j,column=k)
             self.listOfCheckboxes.append(c)
+            j+=1
             if j>=8:
+                j=0
                 k+=1
+            
 
 
         self.entryPointFrame=ttk.Frame(self,borderwidth=4)
@@ -176,10 +191,11 @@ class main_page(ttk.Frame):
 
         request=self.entryPoint.get()
 
-        #SEND JSON TO BACKEND?
+        #SEND JSON TO BACKEND?  
+        self.ctlr.switch_screen(self.ctlr.loadingScreen)
+
         self.ctlr.send_data(request)
 
-        self.ctlr.switch_screen(self.ctlr.loadingScreen)
 
 class nutrition_display_page(ttk.Frame):
     def __init__(self,parent,ctlr:app):
@@ -198,13 +214,14 @@ class nutrition_display_page(ttk.Frame):
         verityJson = ""
 
         if verityJson == "":
-            recipeDetails = json.load(file)
+            self.recipeDetails = json.load(file)
         else:
             #if this doesn't work, just comment it out
             #fw should be the file received from back-end
-            recipeDetails = fw
+            self.recipeDetails = fw
 
-        
+
+
         # adding menu bar in root window
         # new item in menu bar labelled as 'New'
         # adding more items in the menu bar 
@@ -216,7 +233,7 @@ class nutrition_display_page(ttk.Frame):
 
         #Set up the Title
         title = ttk.Label(self,
-                    text= recipeDetails["recipe-name"])
+                    text= self.recipeDetails["recipe-name"])
 
         title.pack(pady=30)
 
@@ -225,34 +242,46 @@ class nutrition_display_page(ttk.Frame):
 
         line.pack()
 
-        addInfo = ttk.Label(self, text=str(str(recipeDetails["cooking-time"]) + "mins || " + str(recipeDetails["credit"])))
+
+
+class current_recipe_page(ttk.Frame):
+    def __init__(self,parent,ctlr:app,loadRecipe,savedRecipes):
+        #setting up page frame
+        super().__init__(parent,borderwidth=6,width=1280,height=720,style='base.TFrame')
+        self.grid(column=0,row=0, sticky=(N, W, E, S))
+
+        self.ctlr=ctlr
+
+        recipe_name=savedRecipes[loadRecipe]["recipe-name"]
+        cooking_time=savedRecipes[loadRecipe]["cooking-time"]
+        credit=savedRecipes[loadRecipe]["credit"]
+        nutrients = savedRecipes[loadRecipe]["nutrients"]
+        ingredients=savedRecipes[loadRecipe]["ingredients"]
+        instructions=savedRecipes[loadRecipe]["instructions"]
+
+        recipeDict=savedRecipes[loadRecipe]
+
+
+        addInfo = ttk.Label(self, text=str(str(recipeDict["cooking-time"]) + "mins || " + str(recipeDict["credit"])))
         addInfo.pack()
 
         ingred_label = ttk.Label(self, text="Ingredients",
                                 font = ("Comic Sans", 32, "bold"))
 
-        ingredients = Listbox(self, height = 10, 
-                        width = 15, 
-                        bg = "grey",
-                        activestyle = 'dotbox', 
-                        font = "Helvetica",
-                        fg = "yellow")
+        ingredients = Listbox(self, height = 15, 
+                        width = 40)
 
-        for i in range(len(recipeDetails["ingredients"])):
-            ingredients.insert(i, str(str(i) + ". " + recipeDetails["ingredients"][i]))
+        for i in range(len(recipeDict["ingredients"])):
+            ingredients.insert(i, str(str(i+1) + ". " + recipeDict["ingredients"][i]))
 
         instruc_label = ttk.Label(self, text="Instructions",
                                 font = ("Comic Sans", 32, "bold"))
 
-        instructions = Listbox(self, height = 10, 
-                        width = 15, 
-                        bg = "grey",
-                        activestyle = 'dotbox', 
-                        font = "Helvetica",
-                        fg = "yellow")
+        instructions = Listbox(self, height = 15    , 
+                        width = 40)
 
-        for i in range(len(recipeDetails["instructions"])):
-            instructions.insert(i, str(str(i) + ". " + recipeDetails["instructions"][i]))
+        for i in range(len(recipeDict["instructions"])):
+            instructions.insert(i, str(str(i+1) + ". " + recipeDict["instructions"][i]))
 
         #pack stuff
         ingred_label.pack()
@@ -260,6 +289,19 @@ class nutrition_display_page(ttk.Frame):
         instruc_label.pack()
         instructions.pack()
 
+        view_recipe = ttk.Button(self, text="View other recipes",
+                        command=lambda:self.ctlr.switch_screen(self.ctlr.NutritionPage))
+
+        return_button=ttk.Button(self,text="Return",
+                                 command=lambda:self.ctlr.switch_screen(self.ctlr.mainPage))
+
+
+        quit_button=ttk.Button(self,text="Return",
+                               command=lambda:self.ctlr.kill())
+
+        view_recipe.pack()
+        return_button.pack()
+        quit_button.pack()
 
 class loading_page(ttk.Frame):
     def __init__(self,parent,ctlr:app):
@@ -273,6 +315,7 @@ class loading_page(ttk.Frame):
         loadingBar.pack()
         # Start moving the indeterminate progress bar.
         loadingBar.start(25)
+
 
 
 
